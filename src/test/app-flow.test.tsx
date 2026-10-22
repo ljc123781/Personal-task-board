@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from '../App';
 import { seedTasks } from '../data/seedTasks';
 import { STORAGE_KEY } from '../lib/storage';
+import { THEME_STORAGE_KEY } from '../lib/theme';
 import type { Task } from '../types';
 
 const todoTask: Task = {
@@ -135,6 +136,34 @@ describe('empty board and filters', () => {
     expect(
       screen.queryByRole('list', { name: '任务列表' }),
     ).not.toBeInTheDocument();
+  });
+});
+
+describe('theme preference', () => {
+  it('toggles between light and dark mode and persists the choice', async () => {
+    render(<App />);
+
+    const toggle = screen.getByRole('button', { name: '深色模式' });
+    await waitFor(() => {
+      expect(document.documentElement.dataset.theme).toBe('light');
+    });
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
+
+    fireEvent.click(toggle);
+
+    await waitFor(() => {
+      expect(document.documentElement.dataset.theme).toBe('dark');
+    });
+    expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('dark');
+
+    fireEvent.click(toggle);
+
+    await waitFor(() => {
+      expect(document.documentElement.dataset.theme).toBe('light');
+    });
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('light');
   });
 });
 

@@ -8,6 +8,7 @@ import { TaskList } from './components/TaskList';
 import { ToastProvider } from './components/ToastProvider';
 import { seedTasks } from './data/seedTasks';
 import { useTasks } from './hooks/useTasks';
+import { useTheme } from './hooks/useTheme';
 import { useToast } from './hooks/useToast';
 import { filterTasks, getNextStatus, getTaskCounts, sortTasks } from './lib/tasks';
 import type {
@@ -31,6 +32,7 @@ function TaskBoard() {
     changeStatus,
   } = useTasks();
   const { showToast } = useToast();
+  const { theme, toggleTheme } = useTheme();
   const [filter, setFilter] = useState<TaskFilter>('all');
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -53,6 +55,14 @@ function TaskBoard() {
       showToast(loadError, 'error');
     }
   }, [loadError, showToast]);
+
+  const handleToggleTheme = () => {
+    const persisted = toggleTheme();
+
+    if (!persisted) {
+      showToast('主题偏好未能保存，本次会话仍会生效。', 'error');
+    }
+  };
 
   const openCreateDialog = () => {
     setEditingTask(null);
@@ -152,6 +162,8 @@ function TaskBoard() {
       <AppHeader
         total={tasks.length}
         counts={counts}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
         onCreate={isPreview ? undefined : openCreateDialog}
         createDisabledReason={
           isPreview ? '预览模式中，操作按钮已禁用。' : undefined

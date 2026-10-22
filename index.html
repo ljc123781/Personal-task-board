@@ -4,11 +4,31 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f3f0e8" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f3f0e8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d1513" media="(prefers-color-scheme: dark)" />
     <meta
       name="description"
       content="一个纯前端、本地优先的个人任务看板：新增、编辑、删除任务，按状态筛选，数据只保存在当前浏览器。"
     />
+    <script>
+      (() => {
+        try {
+          const saved = localStorage.getItem('personal-task-board.theme');
+          const theme =
+            saved === 'light' || saved === 'dark'
+              ? saved
+              : window.matchMedia &&
+                  window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light';
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+        } catch {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
     <title>个人任务看板</title>
   </head>
   <body>

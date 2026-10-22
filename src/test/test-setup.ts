@@ -21,4 +21,6 @@ if (typeof HTMLDialogElement !== 'undefined') {
 
 afterEach(() => {
   cleanup();
+  document.documentElement.removeAttribute('data-theme');
+  document.documentElement.style.colorScheme = '';
 });

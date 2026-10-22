@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { createTaskId } from '../lib/id';
-import { loadTasks, saveTasks } from '../lib/storage';
+import { getBrowserStorage, loadTasks, saveTasks } from '../lib/storage';
 import type { StorageLike } from '../lib/storage';
 import {
   normalizeTaskDraft,
@@ -14,19 +14,7 @@ import type {
   TaskStatus,
 } from '../types';
 
-function resolveStorage(): StorageLike | null {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-
-  try {
-    return window.localStorage;
-  } catch {
-    return null;
-  }
-}
-
-export function useTasks(storage: StorageLike | null = resolveStorage()) {
+export function useTasks(storage: StorageLike | null = getBrowserStorage()) {
   const [initial] = useState(() => {
     const loaded = loadTasks(storage);
 

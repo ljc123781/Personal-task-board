@@ -8,6 +8,18 @@ export interface StorageLike {
   setItem(key: string, value: string): void;
 }
 
+export function getBrowserStorage(): StorageLike | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+}
+
 export interface LoadTasksResult {
   tasks: Task[];
   error: string | null;
